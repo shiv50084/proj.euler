@@ -1,5 +1,5 @@
 /**
-* @file     prob1.c
+* @file     prob2.c
 * @author   Stavros Vagionitis
 * @date     13 Feb 2015
 * @brief    [Problem 2 in Project Euler](https://projecteuler.net/problem=2)
