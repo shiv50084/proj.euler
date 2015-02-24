@@ -53,7 +53,7 @@ uint8_t isPalindrome(const uint64_t num)
         n/=10;
     }
 
-    for(uint64_t i = 0;i<count_digits;i++)
+    for(uint64_t i = 0;i<=count_digits/2;i++)
         if (numb[i] != numb[count_digits - 1 - i])
             return 0;
 
