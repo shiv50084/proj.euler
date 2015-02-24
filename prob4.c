@@ -1,7 +1,7 @@
 /**
 * @file     prob4.c
 * @author   Stavros Vagionitis
-* @date     xx Feb 2015
+* @date     24 Feb 2015
 * @brief    [Problem 4 in Project Euler](https://projecteuler.net/problem=4)
 *           Largest palindrome product
 *           ==========================
