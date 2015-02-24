@@ -1,7 +1,7 @@
 /**
 * @file     prob5.c
 * @author   Stavros Vagionitis
-* @date     xx Feb 2015
+* @date     24 Feb 2015
 * @brief    [Problem 5 in Project Euler](https://projecteuler.net/problem=5)
 *           Smallest multiple
 *           =================
