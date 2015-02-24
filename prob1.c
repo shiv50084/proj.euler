@@ -12,6 +12,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 /**
  * \brief Check if a number is multiple of another number.

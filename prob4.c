@@ -14,6 +14,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 /**
  * \brief Check if the number is palindrome.

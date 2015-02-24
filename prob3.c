@@ -11,6 +11,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 #define max(a,b) \
    ({ __typeof__ (a) _a = (a); \
