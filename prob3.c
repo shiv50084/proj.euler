@@ -167,7 +167,7 @@ uint8_t solution1(uint64_t num)
     for(uint64_t i = 0;i<sz_prm_fct;i++)
         max_prm_fct = max(prm_fct[i], 0);
 
-    fprintf(stdout, "Max prime factor: %u\n", max_prm_fct);
+    fprintf(stdout, "Max prime factor: %ju\n", max_prm_fct);
 
     if (prm_fct)
         free(prm_fct);

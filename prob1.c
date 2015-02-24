@@ -42,7 +42,7 @@ uint8_t solution1(uint64_t maxNum)
         if (isMultiple(i, 3) || isMultiple(i, 5))
             sum += i;
 
-    fprintf(stdout, "Sum: %u\n", sum);
+    fprintf(stdout, "Sum: %ju\n", sum);
 
     return 1;
 }
