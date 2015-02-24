@@ -16,6 +16,11 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#define max(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a > _b ? _a : _b; })
+
 /**
  * \brief Check if the number is palindrome.
  *
@@ -64,19 +69,45 @@ uint8_t isPalindrome(const uint64_t num)
 }
 
 /**
+ * \brief Compute the exponential power for uint64_t
+ *
+ * \param   base    The base to be expanded.
+ * \param   exp     The exponential.
+ * \return  the computed power exponential.
+ */
+uint64_t pow1(uint64_t base, uint64_t exp)
+{
+    uint64_t t = 1;
+
+    if (exp == 0)
+        return 1;
+    else
+    {
+        for(uint64_t i = 0;i<exp;i++)
+            t*=base;
+    }
+
+    return t;
+}
+
+/**
  * \brief The solution using a naive way.
  *
- * \param   num  Number to do something.
+ * \param   num  The number of digits
  * \return  1 if everything is ok, 0 if not.
  */
 uint8_t solution1(uint64_t num)
 {
+    uint64_t maxPalindrome = 0;
 
-    if(isPalindrome(num))
-        fprintf(stdout, "It's palindrome.\n");
-    else
-        fprintf(stdout, "It's not palindrome.\n");
+    for(uint64_t i = pow1(10,num)-1;i>=pow1(10,num-1);i--)
+        for(uint64_t j = pow1(10,num)-1;j>=pow1(10,num-1);j--)
+        {
+            if(isPalindrome(i*j))
+                maxPalindrome = max(i*j, maxPalindrome);
+        }
 
+    fprintf(stdout, "Max palindrome is %ju\n", maxPalindrome);
     return 1;
 }
 
@@ -88,7 +119,7 @@ uint8_t solution1(uint64_t num)
  */
 int usage(char *argv0)
 {
-    fprintf(stdout, "%s <Number to do something.>\n", argv0);
+    fprintf(stdout, "%s <Number of digits.>\n", argv0);
     return -1;
 }
 
@@ -98,6 +129,7 @@ int main(int argc, char *argv[])
     if (argc != 2)
         return usage(argv[0]);
 
+    // Number of digits
     uint64_t num = strtoull(argv[1], NULL, 10);
 
     solution1(num);
