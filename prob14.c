@@ -1,7 +1,7 @@
 /**
 * @file     prob14.c
 * @author   Stavros Vagionitis
-* @date     xx Feb 2015
+* @date     27 Feb 2015
 * @brief    [Problem 14 in Project Euler](https://projecteuler.net/problem=14)
 *           Longest Collatz sequence
 *           ========================
