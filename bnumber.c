@@ -3,6 +3,10 @@
 #include <stdint.h>
 #include <string.h>
 
+#define max(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a > _b ? _a : _b; })
 
 typedef struct bnum
 {
@@ -10,6 +14,22 @@ typedef struct bnum
     uint8_t *num;
 }bnum_t;
 
+
+bnum_t max_sz_bnum(const bnum_t bn1, const bnum_t bn2)
+{
+    if (bn1.sz_num >= bn2.sz_num)
+        return bn1;
+    else
+        return bn2;
+}
+
+bnum_t min_sz_bnum(const bnum_t bn1, const bnum_t bn2)
+{
+    if (bn1.sz_num <= bn2.sz_num)
+        return bn1;
+    else
+        return bn2;
+}
 
 uint64_t count_digits(uint64_t n)
 {
@@ -89,6 +109,13 @@ uint8_t convert_string_to_bnum(const uint8_t str[], bnum_t *bn)
     return 1;
 }
 
+
+uint8_t bnum_add(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
+{
+    uint64_t max_sz_num = max(bn1.sz_num, bn2.sz_num);
+
+
+}
 
 int main(int argc, char *arv[])
 {
