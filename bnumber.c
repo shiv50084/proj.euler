@@ -114,7 +114,6 @@ uint8_t convert_string_to_bnum(const uint8_t str[], bnum_t *bn)
     return 1;
 }
 
-
 uint8_t bnum_add(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
 {
     uint8_t *tmp = NULL;
@@ -127,36 +126,34 @@ uint8_t bnum_add(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
     bnum_t max_num = max_sz_bnum(bn1, bn2);
     bnum_t min_num = min_sz_bnum(bn1, bn2);
 
+    // Initially, the digits of the sum are
+    // equally with the digits of the largest
+    // number regarding the digits. It's possible
+    // to be larger because of the carry in the last
+    // digit.
+    bn->sz_num = max_sz_num;
+    bn->num = malloc(bn->sz_num * sizeof(uint8_t));
+    if (bn->num == NULL)
+    {
+        fprintf(stderr, "%s:%d Mem Alloc failed\n", __func__, __LINE__);
+        return 0;
+    }
+
     uint64_t carry = 0;
     uint64_t i = 0, j = 0;
     // i index for max num and j index for min num.
     for (i = max_sz_num - 1, j = min_sz_num - 1;j != (uint64_t)(-1);i--, j--)
     {
+        // Calculate the sum of the two digits of the numbers, including
+        // carry if exists.
         uint64_t tmp_sum = max_num.num[i] + min_num.num[j] + carry;
-
-
-        // Allocate memory for each digit of the sum
-        bn->sz_num += 1;
-        tmp = realloc(bn->num,bn->sz_num  * sizeof(uint8_t));
-        if (tmp != NULL)
-            bn->num = tmp;
-        else
-        {
-            fprintf(stderr, "%s:%d Mem Alloc failed\n", __func__, __LINE__);
-
-            if (bn->num)
-                free(bn->num);
-
-            return 0;
-        }
 
         // If the addition produce 2-digit
         // then put a vavlue to the carry.
         if (tmp_sum > 9)
         {
-            bn->num[bn->sz_num - 1] = tmp_sum % 10;
-
-            // Calculate carry.
+            //Set the digit for the sum and the carry.
+            bn->num[max_sz_num - 1 - i] = tmp_sum % 10;
             carry = tmp_sum / 10;
 
             // If the two numbers have equal size,
@@ -185,8 +182,8 @@ uint8_t bnum_add(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
         }
         else
         {
-            bn->num[bn->sz_num - 1] = tmp_sum;
-
+            //Set the digit the sum and the carry.
+            bn->num[max_sz_num - 1 - i] = tmp_sum;
             carry = 0;
         }
 
@@ -196,25 +193,10 @@ uint8_t bnum_add(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
     {
         uint64_t tmp_sum = max_num.num[k] + carry;
 
-        bn->sz_num += 1;
-        tmp = realloc(bn->num,bn->sz_num  * sizeof(uint8_t));
-        if (tmp != NULL)
-            bn->num = tmp;
-        else
-        {
-            fprintf(stderr, "%s:%d Mem Alloc failed\n", __func__, __LINE__);
-
-            if (bn->num)
-                free(bn->num);
-
-            return 0;
-        }
-
         if (tmp_sum > 9)
         {
-            bn->num[bn->sz_num - 1] = tmp_sum % 10;
-
-            // Calculate carry.
+            // Set the digit for the sum and the carry.
+            bn->num[max_sz_num - 1 - k] = tmp_sum % 10;
             carry = tmp_sum / 10;
 
             // If there is a carry at the last addition,
@@ -241,8 +223,8 @@ uint8_t bnum_add(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
         }
         else
         {
-            bn->num[bn->sz_num - 1] = tmp_sum;
-
+            // Set the digit for the sum and the carry.
+            bn->num[max_sz_num - 1 - k] = tmp_sum;
             carry = 0;
         }
     }
@@ -285,13 +267,10 @@ int main(int argc, char *arv[])
         free(c.num);
 
 
-
-
-
     bnum_t b1, b2, add;
 
-    convert_num_to_bnum(999, &b1);
-    convert_num_to_bnum(999, &b2);
+    convert_num_to_bnum(999999999, &b1);
+    convert_num_to_bnum(99999, &b2);
 
     fprintf(stdout, "Adding...\n");
     bnum_add(b1, b2, &add);
