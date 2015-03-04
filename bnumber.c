@@ -50,6 +50,24 @@ uint64_t count_digits(uint64_t n)
     return counter;
 }
 
+uint8_t reverse_bnum(bnum_t *bn)
+{
+    if (bn == NULL)
+    {
+        fprintf(stderr, "%s:%d Input value is NULL\n", __func__, __LINE__);
+        return 0;
+    }
+
+    for (uint64_t i = 0;i<bn->sz_num / 2;i++)
+    {
+        bn->num[i] ^= bn->num[bn->sz_num - 1 - i];
+        bn->num[bn->sz_num - 1 - i] ^= bn->num[i];
+        bn->num[i] ^= bn->num[bn->sz_num - 1 - i];
+    }
+
+    return 1;
+}
+
 uint8_t convert_num_to_bnum(const uint64_t n, bnum_t *bn)
 {
     bn->sz_num = count_digits(n);
@@ -229,13 +247,7 @@ uint8_t bnum_add(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
         }
     }
 
-    // Reverse digits of the big number
-    for (uint64_t m = 0;m<bn->sz_num / 2;m++)
-    {
-        bn->num[m] ^= bn->num[bn->sz_num - 1 - m];
-        bn->num[bn->sz_num - 1 - m] ^= bn->num[m];
-        bn->num[m] ^= bn->num[bn->sz_num - 1 - m];
-    }
+    reverse_bnum(bn);
 
     return 1;
 }
@@ -328,12 +340,7 @@ uint8_t bnum_mult(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
         }
 
         // Reverse digits of the big number
-        for (uint64_t m = 0;m<bnum_mult_add[j].sz_num / 2;m++)
-        {
-            bnum_mult_add[j].num[m] ^= bnum_mult_add[j].num[bnum_mult_add[j].sz_num - 1 - m];
-            bnum_mult_add[j].num[bnum_mult_add[j].sz_num - 1 - m] ^= bnum_mult_add[j].num[m];
-            bnum_mult_add[j].num[m] ^= bnum_mult_add[j].num[bnum_mult_add[j].sz_num - 1 - m];
-        }
+        reverse_bnum(&bnum_mult_add[j]);
 
 #if 1
         for (uint64_t k = 0;k<bnum_mult_add[j].sz_num;k++)
