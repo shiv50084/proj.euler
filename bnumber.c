@@ -30,7 +30,7 @@ bnum_t max_sz_bnum(const bnum_t bn1, const bnum_t bn2)
 
 bnum_t min_sz_bnum(const bnum_t bn1, const bnum_t bn2)
 {
-    if (bn1.sz_num <= bn2.sz_num)
+    if (bn1.sz_num < bn2.sz_num)
         return bn1;
     else
         return bn2;
@@ -72,7 +72,7 @@ uint8_t convert_num_to_bnum(const uint64_t n, bnum_t *bn)
 {
     bn->sz_num = count_digits(n);
 
-    bn->num = malloc(bn->sz_num * sizeof(uint8_t));
+    bn->num = calloc(bn->sz_num, sizeof(uint8_t));
     if (bn->num == NULL)
     {
         fprintf(stderr, "%s:%d Mem Alloc failed\n", __func__, __LINE__);
@@ -106,7 +106,7 @@ uint8_t convert_string_to_bnum(const uint8_t str[], bnum_t *bn)
 {
     bn->sz_num = strlen(str);
 
-    bn->num = malloc(bn->sz_num * sizeof(uint8_t));
+    bn->num = calloc(bn->sz_num, sizeof(uint8_t));
     if (bn->num == NULL)
     {
         fprintf(stderr, "%s:%d Mem Alloc failed\n", __func__, __LINE__);
@@ -134,6 +134,18 @@ uint8_t convert_string_to_bnum(const uint8_t str[], bnum_t *bn)
 
 uint8_t bnum_add(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
 {
+#if 0
+        fprintf(stdout, "bn1: ");
+        for (uint64_t i = 0;i<bn1.sz_num;i++)
+            fprintf(stdout, "%ju", bn1.num[i]);
+        fprintf(stdout, "\n");
+
+        fprintf(stdout, "bn2: ");
+        for (uint64_t i = 0;i<bn2.sz_num;i++)
+            fprintf(stdout, "%ju", bn2.num[i]);
+        fprintf(stdout, "\n");
+#endif
+
     uint8_t *tmp = NULL;
     bn->num = NULL;
     bn->sz_num = 0;
@@ -150,7 +162,7 @@ uint8_t bnum_add(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
     // to be larger because of the carry in the last
     // digit.
     bn->sz_num = max_sz_num;
-    bn->num = malloc(bn->sz_num * sizeof(uint8_t));
+    bn->num = calloc(bn->sz_num, sizeof(uint8_t));
     if (bn->num == NULL)
     {
         fprintf(stderr, "%s:%d Mem Alloc failed\n", __func__, __LINE__);
@@ -249,6 +261,13 @@ uint8_t bnum_add(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
 
     reverse_bnum(bn);
 
+#if 0
+        fprintf(stdout, "bn: ");
+        for (uint64_t i = 0;i<bn->sz_num;i++)
+            fprintf(stdout, "%ju", bn->num[i]);
+        fprintf(stdout, "\n");
+#endif
+
     return 1;
 }
 
@@ -276,7 +295,7 @@ uint8_t bnum_mult(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
     //
     // In the above example we have 2 bnums which is the
     // same as the size of the small number.
-    bnum_t *bnum_mult_add = malloc(min_sz_num * sizeof(bnum_t));
+    bnum_t *bnum_mult_add = calloc(min_sz_num, sizeof(bnum_t));
     if (bnum_mult_add == NULL)
     {
         fprintf(stderr, "%s:%d Mem Alloc failed\n", __func__, __LINE__);
@@ -292,8 +311,11 @@ uint8_t bnum_mult(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
         // the digits of the min number with the max number. The size
         // most of the times will be max_sz_num, but if there is a carry
         // at the last digit, then there will be max_sz_num+1.
-        bnum_mult_add[j].sz_num = max_sz_num;
-        bnum_mult_add[j].num = malloc(bnum_mult_add[j].sz_num * sizeof(uint8_t));
+        // For each digit of the min number, increase the size of the number
+        // to be produced by multiplication, because it will go one position
+        // left.
+        bnum_mult_add[j].sz_num = max_sz_num + (min_sz_num - 1 - j);
+        bnum_mult_add[j].num = calloc(bnum_mult_add[j].sz_num, sizeof(uint8_t));
         if (bnum_mult_add[j].num == NULL)
         {
             fprintf(stderr, "%s:%d Mem Alloc failed\n", __func__, __LINE__);
@@ -307,7 +329,7 @@ uint8_t bnum_mult(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
 
             if (tmp_mult > 9)
             {
-                bnum_mult_add[j].num[max_sz_num - 1 - i] = tmp_mult % 10;
+                bnum_mult_add[j].num[(max_sz_num - 1 - i) + (min_sz_num - 1 - j)] = tmp_mult % 10;
                 carry = tmp_mult / 10;
 
                 // There is a carry at the last digit, the size of
@@ -334,7 +356,7 @@ uint8_t bnum_mult(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
             }
             else
             {
-                bnum_mult_add[j].num[max_sz_num - 1 - i] = tmp_mult;
+                bnum_mult_add[j].num[(max_sz_num - 1 - i) + (min_sz_num - 1 - j)] = tmp_mult;
                 carry = 0;
             }
         }
@@ -345,6 +367,30 @@ uint8_t bnum_mult(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
 #if 1
         for (uint64_t k = 0;k<bnum_mult_add[j].sz_num;k++)
             fprintf(stdout, "%ju", bnum_mult_add[j].num[k]);
+        fprintf(stdout, "\n");
+#endif
+
+
+        // For the sum, get the size of the first
+        // number produced by multiplication.
+        if (j == min_sz_num - 1)
+        {
+            bn->sz_num = bnum_mult_add[j].sz_num;
+            bn->num = calloc(bn->sz_num,  sizeof(uint8_t));
+            if (bn->num == NULL)
+            {
+                fprintf(stderr, "%s:%d Mem Alloc failed\n", __func__, __LINE__);
+                return 0;
+            }
+
+        }
+
+        bnum_add(*bn, bnum_mult_add[j], bn);
+
+#if 1
+        fprintf(stdout, "sum bn: ");
+        for (uint64_t m = 0;m<bn->sz_num;m++)
+            fprintf(stdout, "%ju", bn->num[m]);
         fprintf(stdout, "\n");
 #endif
 
@@ -405,7 +451,7 @@ int main(int argc, char *arv[])
     bnum_t b3, b4, mult;
 
     convert_num_to_bnum(9999, &b3);
-    convert_num_to_bnum(99, &b4);
+    convert_num_to_bnum(9999, &b4);
 
     bnum_mult(b3, b4, &mult);
 
