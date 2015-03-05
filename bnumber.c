@@ -366,36 +366,29 @@ uint8_t bnum_mult(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
 
 #if 1
         for (uint64_t k = 0;k<bnum_mult_add[j].sz_num;k++)
-            fprintf(stdout, "%ju", bnum_mult_add[j].num[k]);
+            fprintf(stdout, "%u", bnum_mult_add[j].num[k]);
         fprintf(stdout, "\n");
 #endif
-
-
-        // For the sum, get the size of the first
-        // number produced by multiplication.
-        if (j == min_sz_num - 1)
-        {
-            bn->sz_num = bnum_mult_add[j].sz_num;
-            bn->num = calloc(bn->sz_num,  sizeof(uint8_t));
-            if (bn->num == NULL)
-            {
-                fprintf(stderr, "%s:%d Mem Alloc failed\n", __func__, __LINE__);
-                return 0;
-            }
-
-        }
 
         bnum_add(*bn, bnum_mult_add[j], bn);
 
 #if 1
         fprintf(stdout, "sum bn: ");
         for (uint64_t m = 0;m<bn->sz_num;m++)
-            fprintf(stdout, "%ju", bn->num[m]);
+            fprintf(stdout, "%u", bn->num[m]);
         fprintf(stdout, "\n");
 #endif
 
-
     }
+
+    for (uint64_t i = 0;i<min_sz_num;i++)
+    {
+        if (bnum_mult_add[i].num)
+            free(bnum_mult_add[i].num);
+    }
+
+    if (bnum_mult_add)
+        free(bnum_mult_add);
 }
 
 int main(int argc, char *arv[])
