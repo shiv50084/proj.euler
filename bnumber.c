@@ -302,6 +302,8 @@ uint8_t bnum_mult(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
         return 0;
     }
 
+    bnum_t sum_mult;
+    memset(&sum_mult, 0, sizeof(bnum_t));
     // Looping through the digits of min number
     for (uint64_t j = min_sz_num - 1;j != (uint64_t)(-1);j--)
     {
@@ -370,7 +372,12 @@ uint8_t bnum_mult(const bnum_t bn1, const bnum_t bn2, bnum_t *bn)
         fprintf(stdout, "\n");
 #endif
 
-        bnum_add(*bn, bnum_mult_add[j], bn);
+        if (sum_mult.num != NULL)
+            free(sum_mult.num);
+
+        bnum_add(sum_mult, bnum_mult_add[j], bn);
+
+        sum_mult = *bn;
 
 #if 1
         fprintf(stdout, "sum bn: ");
