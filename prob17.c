@@ -1,14 +1,14 @@
 /**
 * @file     prob17.c
 * @author   Stavros Vagionitis
-* @date     xx Mar 2015
+* @date     07 Mar 2015
 * @brief    [Problem 17 in Project Euler](https://projecteuler.net/problem=17)
 *           Number letter counts
 *           ====================
 *           If the numbers 1 to 5 are written out in words: one, two, three, four, five,
 *           then there are 3 + 3 + 5 + 4 + 4 = 19 letters used in total.
 *
-*           If all the numbers from 1 to 1000 (one thousand) inclusive were written out in words, 
+*           If all the numbers from 1 to 1000 (one thousand) inclusive were written out in words,
 *           how many letters would be used?
 *
 *           NOTE: Do not count spaces or hyphens. For example, 342 (three hundred and forty-two) contains 23 letters and
@@ -36,20 +36,25 @@ const char *number_words_lu_tbl[] = {
 #define NUMBER_WORDS_LUTBL_SZ (sizeof (number_words_lu_tbl) / sizeof (const char *))
 
 /**
- * \brief Check if a number is multiple of another number.
+ * \brief Convert a number to words in english wihout space.
+ *        It is used a lookup table to achieve this. Currently
+ *        can convert numbers up to 1000.
  *
- * \param   num     The number to check if it's multiple
- * \param   mult    The multiple to be checked.
- * \return  1 if it's multiple, 0 if not.
+ *        Some examples
+ *
+ *        342 is "threehundredandfortytwo"
+ *        115 is "onehundredandfifteen"
+ *        1000 is "onethousand"
+ *
+ *        TODO: Needs refactoring the code. It can be used
+ *        the recursive function to achieve. There is code
+ *        that's is repaeated.
+ *
+ * \param   num             [IN] The number to convert into words.
+ * \param   num_word        [OUT] The words of the number.
+ * \param   len_num_word    [OUT] The number of letters of the word.
+ * \return  1 everything is ok, 0 if not.
  */
-uint8_t isMultiple(uint64_t num, uint64_t mult)
-{
-    if (num % mult == 0)
-        return 1;
-    else
-        return 0;
-}
-
 uint8_t convert_number_to_word(uint64_t num, char **num_word, size_t *len_num_word)
 {
     *num_word = NULL;
@@ -208,7 +213,7 @@ uint8_t convert_number_to_word(uint64_t num, char **num_word, size_t *len_num_wo
 /**
  * \brief The solution using a naive way.
  *
- * \param   num  Number to do something.
+ * \param   num  Upper limit for convering numbers to words.
  * \return  1 if everything is ok, 0 if not.
  */
 uint8_t solution1(uint64_t num)
@@ -246,7 +251,7 @@ uint8_t solution1(uint64_t num)
  */
 int usage(char *argv0)
 {
-    fprintf(stdout, "%s <Number to do something.>\n", argv0);
+    fprintf(stdout, "%s <Upper limit for convering numbers to words.>\n", argv0);
     return -1;
 }
 
