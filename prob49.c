@@ -247,7 +247,14 @@ uint8_t perm(const uint64_t num, uint64_t **perm, uint64_t *perm_sz)
     return 1;
 }
 
-uint8_t isPermutationOf(const uint64_t num1, const uint64_t num2)
+/**
+ * \brief Check if one number is permutation of another
+ *
+ * \param   num1    The one number to check if it's permutation of another
+ * \param   num2    The other number
+ * \return  1 if it's permutation, 0 if not
+ */
+uint8_t isPermutation(const uint64_t num1, const uint64_t num2)
 {
     uint64_t cd1 = count_digits(num1);
     uint64_t cd2 = count_digits(num2);
@@ -306,11 +313,11 @@ uint8_t solution1(uint64_t num)
         {
             fprintf(stdout, "Prime: %ju - ", i);
             uint64_t j = i+3330;
-            if (isPrime(j) && isPermutationOf(j, i))
+            if (isPrime(j) && isPermutation(j, i))
             {
                 fprintf(stdout, "%ju - ", j);
                 uint64_t k = i+6660;
-                if (isPrime(k) && isPermutationOf(k, i))
+                if (isPrime(k) && isPermutation(k, i))
                 {
                     fprintf(stdout, "%ju - ", k);
                 }
