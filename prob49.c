@@ -77,6 +77,47 @@ uint8_t isPrime(uint64_t num)
 }
 
 /**
+ * \brief Compute the exponential power for uint64_t
+ *
+ * \param   base    The base to be expanded.
+ * \param   exp     The exponential.
+ * \return  the computed power exponential.
+ */
+uint64_t pow1(uint64_t base, uint64_t exp)
+{
+    uint64_t t = 1;
+
+    if (exp == 0)
+        return 1;
+    else
+    {
+        for(uint64_t i = 0;i<exp;i++)
+            t*=base;
+    }
+
+    return t;
+}
+
+/**
+ * \brief Given the number of digits, calculate the lower and upper
+ *        limit of numbers.
+ *
+ * \param   digits      The number of digits
+ * \param   min_num     The minimum number with the
+ *                      specified number of digits
+ * \param   max_num     The maximum number with the
+ *                      specified number of digits
+ * \return  the computed power exponential.
+ */
+uint8_t get_limits_given_digits(uint64_t digits, uint64_t *min_num, uint64_t *max_num)
+{
+    *min_num = pow1(10, digits - 1);
+    *max_num = pow1(10, digits) - 1;
+
+    return 1;
+}
+
+/**
  * \brief Count the digits of a number
  *
  * \param   n     The number to count the digits
@@ -178,6 +219,7 @@ uint8_t swap_digits(const uint64_t num, uint64_t *out_num, uint64_t dpos1, uint6
  * \param   num     The number to permute
  * \param   perm    An array of permutation of number num
  * \param   perm_sz The size of the array.
+ * \return  1 if everything was ok, 0 if not
  */
 uint8_t perm(const uint64_t num, uint64_t **perm, uint64_t *perm_sz)
 {
@@ -302,13 +344,16 @@ uint8_t isPermutation(const uint64_t num1, const uint64_t num2)
 /**
  * \brief The solution using a naive way.
  *
- * \param   num  Number to do something.
+ * \param   num  Number of digits to find primes.
  * \return  1 if everything is ok, 0 if not.
  */
 uint8_t solution1(uint64_t num)
 {
+    uint64_t llim = 0, ulim = 0;
+    get_limits_given_digits(num, &llim, &ulim);
 
-    for (uint64_t i = 999;i<10000;i++)
+    for (uint64_t i = llim;i<=ulim;i++)
+    {
         if (isPrime(i))
         {
             fprintf(stdout, "Prime: %ju - ", i);
@@ -323,8 +368,33 @@ uint8_t solution1(uint64_t num)
                 }
             }
             fprintf(stdout, "\n");
+        }
+    }
 
-#if 0
+    return 1;
+}
+
+/**
+ * \brief This is not a proper solution.
+ *        What it does is to find all the permutations
+ *        of the prime numbers and print only those permutations
+ *        which are primes.
+ *
+ *        It is mostly as a proof of concept regarding the permutation
+ *        algorithm/method.
+ *
+ * \param   num  Number of digits to find primes.
+ * \return  1 if everything is ok, 0 if not.
+ */
+uint8_t solution2(uint64_t num)
+{
+    uint64_t llim = 0, ulim = 0;
+    get_limits_given_digits(num, &llim, &ulim);
+
+    for (uint64_t i = llim;i<=ulim;i++)
+    {
+        if (isPrime(i))
+        {
             // Get the permutations of the prime and
             // check which are primes.
             fprintf(stdout, "Prime: %ju - ", i);
@@ -348,8 +418,8 @@ uint8_t solution1(uint64_t num)
 
             if (prm)
                 free(prm);
-#endif
         }
+    }
 
     return 1;
 }
@@ -362,7 +432,7 @@ uint8_t solution1(uint64_t num)
  */
 int usage(char *argv0)
 {
-    fprintf(stdout, "%s <Number to do something.>\n", argv0);
+    fprintf(stdout, "%s <Number of digits to find primes.>\n", argv0);
     return -1;
 }
 
@@ -375,6 +445,10 @@ int main(int argc, char *argv[])
     uint64_t num = strtoull(argv[1], NULL, 10);
 
     solution1(num);
+
+#if 0
+    solution2(num);
+#endif
 
     return 0;
 }
