@@ -49,7 +49,7 @@ uint8_t isMultiple(uint64_t num, uint64_t mult)
  * \brief Find the n-th triangle number using the naive way.
  *
  * \param   nth    The nth number to calulate the triangle.
- * \return  1 if it's multiple, 0 if not.
+ * \return  the nth triangle number.
  */
 uint64_t findNthTriangle(uint64_t nth)
 {
@@ -70,7 +70,7 @@ uint64_t findNthTriangle(uint64_t nth)
  *        http://en.wikipedia.org/wiki/Triangular_number
  *
  * \param   nth    The nth number to calulate the triangle.
- * \return  1 if it's multiple, 0 if not.
+ * \return  the nth triangle number.
  */
 uint64_t findNthTriangle(uint64_t nth)
 {
@@ -85,7 +85,7 @@ uint64_t findNthTriangle(uint64_t nth)
  * \param   num         [IN] The number to find the divisors.
  * \param   divisors    [OUT] The divisors.
  * \param   sz_divisors [OUT] The total number of divisors.
- * \return  1 if it's multiple, 0 if not.
+ * \return  1 if everything is ok, 0 if not
  */
 uint8_t findDivisors(uint64_t num, uint64_t **divisors, uint64_t *sz_divisors)
 {
