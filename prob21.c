@@ -38,7 +38,7 @@ uint8_t isMultiple(uint64_t num, uint64_t mult)
 /**
  * \brief Find the divisors of a number. For example
  *
- *        28: 1,2,4,7,14,28
+ *        28: 1,2,4,7,14
  *
  * \param   num         [IN] The number to find the divisors.
  * \param   divisors    [OUT] The divisors.
