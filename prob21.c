@@ -50,7 +50,7 @@ uint8_t findDivisors(uint64_t num, uint64_t **divisors, uint64_t *sz_divisors)
     uint64_t *tmp = NULL;
     *sz_divisors = 0;
 
-    for (uint64_t i = 1;i<num;i++)
+    for (uint64_t i = 1;i<=num/2;i++)
     {
         if (isMultiple(num, i))
         {
