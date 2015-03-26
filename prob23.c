@@ -46,6 +46,9 @@ uint8_t isMultiple(uint64_t num, uint64_t mult)
  *
  *        28: 1,2,4,7,14
  *
+ *        See more info of several implementations in
+ *        http://www.mathblog.dk/uva-294-divisors/
+ *
  * \param   num         [IN] The number to find the divisors.
  * \param   divisors    [OUT] The divisors.
  * \param   sz_divisors [OUT] The total number of divisors.
@@ -56,11 +59,14 @@ uint8_t findDivisors(uint64_t num, uint64_t **divisors, uint64_t *sz_divisors)
     uint64_t *tmp = NULL;
     *sz_divisors = 0;
 
-    for (uint64_t i = 1;i<num;i++)
+    for (uint64_t i = 1;i*i<=num;i++)
     {
         if (isMultiple(num, i))
         {
-            *sz_divisors += 1;
+            if (i == 1 || num == i*i)
+                *sz_divisors += 1;
+            else
+                *sz_divisors += 2;
 
             tmp = realloc(*divisors, *sz_divisors * sizeof(uint64_t));
             if (tmp != NULL)
@@ -75,7 +81,10 @@ uint8_t findDivisors(uint64_t num, uint64_t **divisors, uint64_t *sz_divisors)
                 return 0;
             }
 
+
             (*divisors)[*sz_divisors - 1] = i;
+            if (i > 1 && num != i*i)
+                (*divisors)[*sz_divisors - 2] = num/i;
 
         }
     }
@@ -155,6 +164,13 @@ uint8_t isAbundant(uint64_t num)
     uint64_t div_sz = 0;
 
     findDivisors(num, &div, &div_sz);
+
+#if 0
+    fprintf(stdout, "%ju: ", num);
+    for (uint64_t i = 0;i<div_sz;i++)
+        fprintf(stdout, "%ju ", div[i]);
+    fprintf(stdout, "\n");
+#endif
 
     // Calculate the sum of the divisors
     uint64_t sum_div = sum_array(div, div_sz);
