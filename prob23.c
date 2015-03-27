@@ -1,7 +1,7 @@
 /**
 * @file     prob23.c
 * @author   Stavros Vagionitis
-* @date     xx Mar 2015
+* @date     27 Mar 2015
 * @brief    [Problem 23 in Project Euler](https://projecteuler.net/problem=23)
 *           Non-abundant sums
 *           =================
