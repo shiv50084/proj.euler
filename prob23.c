@@ -118,6 +118,16 @@ uint64_t sum_array(uint64_t arr[], uint64_t sz)
     return sum;
 }
 
+/**
+ * \brief Check if a number is perfect
+ *        A perfect number is a number for which the sum of
+ *        its proper divisors is exactly equal to the number.
+ *        See http://en.wikipedia.org/wiki/Perfect_number for
+ *        more info
+ *
+ * \param   num     The number to check
+ * \return  1 if it's perfect, 0 otherwise.
+ */
 uint8_t isPerfect(uint64_t num)
 {
     uint64_t *div = NULL;
@@ -138,6 +148,16 @@ uint8_t isPerfect(uint64_t num)
         return 0;
 }
 
+/**
+ * \brief Check if a number is deficient
+ *        A deficient number is a number for which the sum of
+ *        its proper divisors is less than the number.
+ *        See http://en.wikipedia.org/wiki/Deficient_number for
+ *        more info
+ *
+ * \param   num     The number to check
+ * \return  1 if it's deficient, 0 otherwise.
+ */
 uint8_t isDeficient(uint64_t num)
 {
     uint64_t *div = NULL;
@@ -158,19 +178,22 @@ uint8_t isDeficient(uint64_t num)
         return 0;
 }
 
+/**
+ * \brief Check if a number is abundant
+ *        An abuntant number is a number for which the sum of
+ *        its proper divisors is greater than the number.
+ *        See http://en.wikipedia.org/wiki/Abundant_number for
+ *        more info
+ *
+ * \param   num     The number to check
+ * \return  1 if it's abuntant, 0 otherwise.
+ */
 uint8_t isAbundant(uint64_t num)
 {
     uint64_t *div = NULL;
     uint64_t div_sz = 0;
 
     findDivisors(num, &div, &div_sz);
-
-#if 0
-    fprintf(stdout, "%ju: ", num);
-    for (uint64_t i = 0;i<div_sz;i++)
-        fprintf(stdout, "%ju ", div[i]);
-    fprintf(stdout, "\n");
-#endif
 
     // Calculate the sum of the divisors
     uint64_t sum_div = sum_array(div, div_sz);
