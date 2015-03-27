@@ -187,6 +187,8 @@ uint8_t isAbundant(uint64_t num)
 
 /**
  * \brief The solution using a naive way.
+ *        TODO Find an efficient way to calculate
+ *             quickly the sum
  *
  * \param   num  Number to do something.
  * \return  1 if everything is ok, 0 if not.
