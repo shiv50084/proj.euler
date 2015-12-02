@@ -54,18 +54,29 @@ uint8_t isMultiple(uint64_t num, uint64_t mult)
  *
  *        More info here http://en.wikipedia.org/wiki/Factorial
  *
- * \param   num     The number to calculate the factorial
+ * \param   from    The upper limit to calculate the factorial
+ * \param   to      The lower limit to calculate the factorial
  * \return  the factorial. If there is a integer overflow,
  *          then returns the UINT64_MAX value and stops the
  *          computation of factorial.
+ *
+ * How to use:
+ *      If you want to calculate the 7! then use it like factorial(7, 1)
+ *      If you want to calculate the factorial from 7 to 3, then use it like factorial(7, 2)
  */
-uint64_t factorial(uint64_t num)
+uint64_t factorial(uint64_t from, uint64_t to)
 {
     uint64_t fact = 1;
 
-    if (num == 0)
+    if (to == 0 || to > from)
+    {
+        fprintf(stderr,"Lower limit is 0 or more than the upper.\n");
+        return UINT64_MAX;
+    }
+
+    if (from == 0)
         return 1;
-    else if (num == 1)
+    else if (from == 1)
         return 1;
     else
     {
@@ -73,7 +84,7 @@ uint64_t factorial(uint64_t num)
         uint64_t prev_fact = 1;
 
         // Don't need to multiple with 1.
-        for (uint64_t i = num;i>1;i--)
+        for (uint64_t i = from;i>to;i--)
         {
             fact *= i;
 
@@ -81,7 +92,7 @@ uint64_t factorial(uint64_t num)
             // If there is overflow, then return the max value.
             if (prev_fact > fact)
             {
-                fprintf(stderr,"UINT64 overflow for %ju! when multiplying %ju.\n", num, i);
+                fprintf(stderr,"UINT64 overflow for (%ju,%ju)! when multiplying %ju.\n", from, to, i);
                 return UINT64_MAX;
             }
 
@@ -92,6 +103,7 @@ uint64_t factorial(uint64_t num)
     return fact;
 }
 
+#if 0
 /**
  * \brief Calculate the central binomial coefficient of a number
  *
@@ -107,19 +119,55 @@ uint64_t factorial(uint64_t num)
  */
 uint64_t central_binomial_coefficient(uint64_t num)
 {
-    uint64_t fact_n = factorial(num);
+    uint64_t fact_n = factorial(num, 1);
 
     if (fact_n == UINT64_MAX)
         return UINT64_MAX;
 
-    uint64_t fact_2n = factorial(2*num);
+    uint64_t fact_2n = factorial(2*num, 1);
 
     if (fact_2n == UINT64_MAX)
         return UINT64_MAX;
 
     return fact_2n / (fact_n * fact_n);
 }
+#endif
 
+#if 1
+/**
+ * \brief Calculate the central binomial coefficient of a number with a more
+ *        smarter way
+ *
+ *        The normal calculation is the following
+ *        (2n)
+ *        |  | = (2*n)! / (n!)^2 = (2*n)! / n! * n! = n! * (n+1) * (n+2) ... * (2*n) / n! * n! =
+ *        ( n)
+ *             = (n+1) * (n+2) ... * (2*n) / n!
+ *
+ *        More info http://en.wikipedia.org/wiki/Central_binomial_coefficient
+ *
+ *
+ * \param   num     The number to calculate the central binomial coefficient
+ * \return  the central binomial coefficient. If there is a integer overflow
+ *          calculating the factorials, then return UINT64_MAX.
+ */
+uint64_t central_binomial_coefficient(uint64_t num)
+{
+    uint64_t fact_n = factorial(num, 1);
+
+    if (fact_n == UINT64_MAX)
+        return UINT64_MAX;
+
+    uint64_t fact_2n = factorial(2*num, num);
+
+    if (fact_2n == UINT64_MAX)
+        return UINT64_MAX;
+
+    return fact_2n / fact_n;
+}
+#endif
+
+#if 1
 /**
  * \brief The solution using a naive way.
  *
@@ -129,16 +177,13 @@ uint64_t central_binomial_coefficient(uint64_t num)
 uint8_t solution1(uint64_t num)
 {
 
-    for (uint64_t i = 0;i<num;i++)
-    {
-        fprintf(stdout, "%ju! = %ju\n", i, factorial(i));
-    }
-
     fprintf(stdout, "Central binomial coefficient of %ju is %ju\n", num, central_binomial_coefficient(num));
 
 
     return 1;
 }
+#endif
+
 
 /**
  * \brief Usage of this program.
